@@ -1,0 +1,88 @@
+.accordion {
+  background-color: #3498db; /* A soft, professional blue */
+  color: #ffffff; /* White text for high contrast */
+  cursor: pointer;
+  padding: 7px;
+  width: 100%;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  text-align: left;
+  outline: none;
+  font-weight: 600;
+  transition: 0.4s;
+  overflow: hidden;
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.active,
+.accordion:hover {
+  color: #ffffff;
+  font-weight: 500;
+  background-color: #2c3e50; /* A darker shade for active/hover state */
+}
+
+.accordion:after {
+  content: "\276F";
+  color: #ffffff;
+  float: right;
+  margin-left: 5px;
+}
+
+.active:after,
+.accordion:hover:after {
+  content: "\276E";
+}
+
+.panel {
+  padding: 0 10px;
+  background-color: #ecf0f1; /* Light gray for panel background */
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
+
+.accordionMenuDiv {
+  width: 100%;
+  direction: rtl;
+  font-weight: 300 !important;
+  height: 380px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #bdc3c7 #ffffff; /* Custom scrollbar colors */
+}
+
+.accordionMenuDiv::-webkit-scrollbar {
+  width: 10px !important;
+}
+
+.accordionMenuDiv::-webkit-scrollbar-thumb {
+  background: #bdc3c7 !important; /* Light gray scrollbar thumb */
+}
+
+.accordionMenuDiv::-webkit-scrollbar-thumb:hover {
+  background: #7f8c8d !important; /* Darker gray on hover */
+}
+
+.accordionMenuDiv::-webkit-scrollbar-track {
+  background: #ecf0f1 !important; /* Light gray track */
+}
+
+.accordionMenuDivInside {
+  direction: ltr;
+}
+
+.accordionMenuIcon {
+  width: 20px;
+  height: auto;
+}
+
+.accordionItem {
+  color: #2c3e50; /* Dark gray for text */
+  text-decoration: none;
+}
+
+.accordionItem:hover {
+  text-decoration: none;
+  color: #2980b9; /* Blue color on hover */
+}

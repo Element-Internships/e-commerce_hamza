@@ -1,0 +1,46 @@
+.sideNavOpen {
+  height: 100%;
+  width: 240px;
+  margin-top: 55px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2000;
+  overflow-x: hidden;
+  font-size: 16px;
+  padding-top: 40px;
+  transition: 0.1s;
+  background-color: #3498db; /* Replaced brown with a cool blue color */
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.1); /* Updated shadow to use black for a more neutral effect */
+}
+
+.sideNavClose {
+  height: 100%;
+  width: 0px;
+  position: fixed;
+  top: 0;
+  font-size: 20px;
+  left: 0;
+  z-index: 10;
+  overflow-x: hidden;
+  transition: 0.1s;
+  background-color: #2c3e50; /* Replaced brown with a dark gray/blue color */
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.1); /* Updated shadow to match the other elements */
+}
+
+.ContentOverlayOpen {
+  display: block;
+  position: fixed;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 7;
+  right: 0;
+  bottom: 0;
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.5); /* Kept the overlay color as black with transparency */
+}
+
+.ContentOverlayClose {
+  display: none;
+}
