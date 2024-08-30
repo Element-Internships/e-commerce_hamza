@@ -1,31 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Modal } from 'react-bootstrap';
-import { getNotificationHistory } from '../../api/AppURL';
-
 import axios from 'axios';
 import { Navigate } from 'react-router';
+import { getNotificationHistory, getUserData } from '../../api/AppURL';
 
 const Notification = () => {
     const [show, setShow] = useState(false);
     const [notificationData, setNotificationData] = useState([]);
-    const [isLoading, setIsLoading] = useState('');
-    const [mainDiv, setMainDiv] = useState('d-none');
+    const [userEmail, setUserEmail] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
     const [notificationMsg, setNotificationMsg] = useState('');
     const [notificationTitle, setNotificationTitle] = useState('');
     const [notificationDate, setNotificationDate] = useState('');
-    
+
+    const token = localStorage.getItem('token');
     useEffect(() => {
-     axios.get(getNotificationHistory())
-         .then(response => {
-             setNotificationData(response.data);
-             setIsLoading('d-none');
-             setMainDiv('');
-         })
-         .catch(error => {
-             console.error('Error fetching notifications:', error);
-         });
- }, []);
- 
+        if (!localStorage.getItem('token')) {
+            return;
+        }
+
+        // Fetch user details
+        axios.get(getUserData(), {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then(response => {
+                setUserEmail(response.data.email);
+                
+                // Fetch notifications
+                return axios.get(getNotificationHistory());
+            })
+            .then(response => {
+                // Filter notifications by user email
+                const filteredNotifications = response.data.filter(notification => notification.email === userEmail);
+                setNotificationData(filteredNotifications);
+                setIsLoading(false);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    }, [userEmail]);
 
     const handleClose = () => setShow(false);
 
@@ -68,7 +83,7 @@ const Notification = () => {
         <>
             <Container className="TopSection">
                 <Row>
-                    {myView}
+                    {isLoading ? <p> the notifactions are Loading...</p> : myView}
                 </Row>
             </Container>
 

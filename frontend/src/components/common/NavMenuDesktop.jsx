@@ -15,7 +15,9 @@ const NavMenuDesktop = (props) => {
   const [cartCount, setCartCount] = useState(0);
   const [email, setEmail] = useState('');
   const [favoriteCount, setFavoriteCount] = useState(0);
+  const [notificationCount, setNotificationCount] = useState(0);
   const nav=useNavigate();
+
   const token = localStorage.getItem('token');
 
   useEffect(() => {
@@ -62,6 +64,27 @@ const NavMenuDesktop = (props) => {
       fetchFavoriteList();
     }
   }, [email]);
+
+
+
+  useEffect(() => {
+    if (email) {
+      const fetchNotificationCount = async () => {
+        try {
+          const notificationsResponse = await axios.get('http://127.0.0.1:8000/api/notification');
+      const userNotifications = notificationsResponse.data.filter(notification => notification.email === email);
+    
+      setNotificationCount(userNotifications.length);
+  
+        } catch (error) {
+          console.error('Error fetching notification count:', error);
+        }
+      };
+
+      fetchNotificationCount();
+    }
+  }, [email]);
+
   const logout = () => {
     localStorage.clear();
    
@@ -116,7 +139,7 @@ const NavMenuDesktop = (props) => {
         <Link to="/notification" className="btn">
           <i className="fa h4 fa-bell"></i>
           <sup>
-            <span className="badge text-white bg-danger">5</span>
+            <span className="badge text-white bg-danger">{notificationCount}</span>
           </sup>
         </Link>
 

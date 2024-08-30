@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\CartOrder;
 use App\Models\ProductCart;
 use App\Models\ProductList;
-use App\Models\CartOrder;
+use App\Models\Notification;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class ProductCartController extends Controller
 {
@@ -98,8 +99,8 @@ class ProductCartController extends Controller
 
 
 
-    public function CartOrder(Request $request){
-
+    public function CartOrder(Request $request)
+    {
         $city = $request->input('city');
         $paymentMethod = $request->input('payment_method');
         $yourName = $request->input('name');
@@ -107,18 +108,18 @@ class ProductCartController extends Controller
         $DeliveryAddress = $request->input('delivery_address');
         $invoice_no = $request->input('invoice_no');
         $DeliveryCharge = $request->input('delivery_charge');
-
+    
         date_default_timezone_set("Asia/Hebron");
         $request_time = date("h:i:sa");
         $request_date = date("d-m-Y");
-
-        $CartList = ProductCart::where('email',$email)->get();
-
-        foreach($CartList as $CartListItem){
+    
+        $CartList = ProductCart::where('email', $email)->get();
+    
+        foreach ($CartList as $CartListItem) {
             $cartInsertDeleteResult = "";
-
+    
             $resultInsert = CartOrder::insert([
-                'invoice_no' => "Easy".$invoice_no,
+                'invoice_no' => "Easy" . $invoice_no,
                 'product_name' => $CartListItem['product_name'],
                 'product_code' => $CartListItem['product_code'],
                 'size' => $CartListItem['size'],
@@ -136,20 +137,26 @@ class ProductCartController extends Controller
                 'order_time' => $request_time,
                 'order_status' => "Pending",
             ]);
-
-            if ($resultInsert==1) {
-               $resultDelete = ProductCart::where('id',$CartListItem['id'])->delete();
-               if ($resultDelete==1) {
-                   $cartInsertDeleteResult=1;
-               }else{
-                   $cartInsertDeleteResult=0;
-               }
+    
+            if ($resultInsert == 1) {
+                $resultDelete = ProductCart::where('id', $CartListItem['id'])->delete();
+                if ($resultDelete == 1) {
+                    $cartInsertDeleteResult = 1;
+                } else {
+                    $cartInsertDeleteResult = 0;
+                }
             }
-
+    
+            // Create notification
+            $this->createNotification(
+                $CartListItem['email'],
+                'Order Pending',
+                "Your order with invoice no Easy{$invoice_no} is placed and pending."
+            );
         }
-            return $cartInsertDeleteResult;
-
+        return $cartInsertDeleteResult;
     }
+    
 
 
 
@@ -197,34 +204,81 @@ class ProductCartController extends Controller
     } 
 
  
-    public function PendingToProcessing($id){
+    // public function PendingToProcessing($id){
 
-    CartOrder::findOrFail($id)->update(['order_status' => 'Processing']);
+    // CartOrder::findOrFail($id)->update(['order_status' => 'Processing']);
 
-     $notification = array(
+    //  $notification = array(
+    //         'message' => 'Order Processing Successfully',
+    //         'alert-type' => 'success'
+    //     );
+
+    //     return redirect()->route('pending.order')->with($notification);
+
+    // } 
+
+ public function PendingToProcessing($id)
+    {
+        $order = CartOrder::findOrFail($id);
+        $order->update(['order_status' => 'Processing']);
+
+        // Create notification
+        $this->createNotification(
+            $order->email,
+            'Order Processing',
+            "Your order with invoice no {$order->invoice_no} is now being processed."
+        );
+
+        $notification = array(
             'message' => 'Order Processing Successfully',
             'alert-type' => 'success'
         );
 
         return redirect()->route('pending.order')->with($notification);
+    }
 
-    } 
+    //     public function ProcessingToComplete($id){
 
+    // CartOrder::findOrFail($id)->update(['order_status' => 'Complete']);
 
-        public function ProcessingToComplete($id){
+    //  $notification = array(
+    //         'message' => 'Order Complete Successfully',
+    //         'alert-type' => 'success'
+    //     );
 
-    CartOrder::findOrFail($id)->update(['order_status' => 'Complete']);
+    //     return redirect()->route('processing.order')->with($notification);
 
-     $notification = array(
+    // } 
+
+     public function ProcessingToComplete($id)
+    {
+        $order = CartOrder::findOrFail($id);
+        $order->update(['order_status' => 'Complete']);
+
+        // Create notification
+        $this->createNotification(
+            $order->email,
+            'Order Complete',
+            "Your order with invoice no {$order->invoice_no} is complete and ready for delivery."
+        );
+
+        $notification = array(
             'message' => 'Order Complete Successfully',
             'alert-type' => 'success'
         );
 
         return redirect()->route('processing.order')->with($notification);
+    }
 
-    } 
-
-
+    private function createNotification($email, $title, $message)
+    {
+        Notification::create([
+            'email' => $email,
+            'title' => $title,
+            'message' => $message,
+            'date' => now(),
+        ]);
+    }
 
 }
  
