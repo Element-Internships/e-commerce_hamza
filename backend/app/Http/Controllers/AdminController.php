@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Contact;
+use App\Models\Visitor;
+use App\Models\CartOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -80,8 +83,18 @@ class AdminController extends Controller
 
 
 
+// method to create the dashoboard information
+    public function index()
+{
+    $totalOrders = CartOrder::count();
+    $totalRevenue = CartOrder::sum('total_price');
+    $totalVisitors = Visitor::count();
+    $totalMessages = Contact::count();
 
+    $recentOrders = CartOrder::latest()->take(10)->get();
 
+    return view('admin.index', compact('totalOrders', 'totalRevenue', 'totalVisitors', 'totalMessages', 'recentOrders'));
+}
 
 
 }

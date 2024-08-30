@@ -14,40 +14,37 @@ class ProductCartController extends Controller
         $email = $request->input('email');
         $size = $request->input('size');
         $color = $request->input('color');
-        $quantity = $request->input('quantity');
+        $quantity = (int)$request->input('quantity'); // Cast to integer
         $product_code = $request->input('product_code');
-
-        $productDetails = ProductList::where('product_code',$product_code)->get();
-
+    
+        $productDetails = ProductList::where('product_code', $product_code)->get();
+    
         $price = $productDetails[0]['price'];
         $special_price = $productDetails[0]['special_price'];
-
-        if($special_price=="na"){
-            $total_price = $price*$quantity;
-            $unit_price = $price;
+    
+        if($special_price == "na") {
+            $unit_price = (float)$price; // Cast to float
+        } else {
+            $unit_price = (float)$special_price; // Cast to float
         }
-        else{
-            $total_price = $special_price*$quantity;
-            $unit_price = $special_price;
-        }
-
+    
+        $total_price = $unit_price * $quantity;
+    
         $result = ProductCart::insert([
-
             'email' => $email,
             'image' => $productDetails[0]['image'],
             'product_name' => $productDetails[0]['title'],
             'product_code' => $productDetails[0]['product_code'],
-            'size' => "Size: ".$size,
-            'color' => "Color: ".$color,
+            'size' => "Size: " . $size,
+            'color' => "Color: " . $color,
             'quantity' => $quantity,
             'unit_price' => $unit_price,
             'total_price' => $total_price, 
-
         ]);
-
+    
         return $result;
-    } 
-
+    }
+    
 
 
     public function CartCount(Request $request){
@@ -111,7 +108,7 @@ class ProductCartController extends Controller
         $invoice_no = $request->input('invoice_no');
         $DeliveryCharge = $request->input('delivery_charge');
 
-        date_default_timezone_set("Asia/Dhaka");
+        date_default_timezone_set("Asia/Hebron");
         $request_time = date("h:i:sa");
         $request_date = date("d-m-Y");
 

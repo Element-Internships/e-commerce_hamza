@@ -43,7 +43,13 @@ Route::prefix('admin')->group(function () {
   Route::get('/change/password', [AdminController::class, 'ChangePassword'])->name('change.password');
 
   Route::post('/change/password/update', [AdminController::class, 'ChangePasswordUpdate'])->name('change.password.update');
+
+ 
+
 });
+Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.index');
+
+
 
 
 Route::prefix('category')->group(function () {

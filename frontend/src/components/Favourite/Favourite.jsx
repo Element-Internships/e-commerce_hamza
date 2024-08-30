@@ -19,6 +19,7 @@ const Favourite = ({ user }) => {
     try {
       const response = await axios.get(getFavouriteList(user.email));
       setProductData(response.data);
+      console.log(response.data);
       setIsLoading("d-none");
       setMainDiv("");
     } catch (error) {

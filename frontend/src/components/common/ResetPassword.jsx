@@ -5,6 +5,7 @@ import { userResetPassword } from '../../api/AppURL'; // Correct named import
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
 const ResetPassword = () => {
   const [formData, setFormData] = useState({
@@ -14,12 +15,17 @@ const ResetPassword = () => {
     password_confirmation: ''
   });
 
+
+
+  const navigate = useNavigate(); 
+
   const formSubmit = (e) => {
     e.preventDefault();
-    axios.post(userResetPassword(), formData) // Use the named import function
+    axios.post(userResetPassword(), formData) 
       .then((response) => {
         toast.success(response.data.message, { position: "top-right" });
         setFormData({ token: '', email: '', password: '', password_confirmation: '' });
+        navigate('/profile');
       })
       .catch((error) => {
         toast.error(error.response.data.message, { position: "top-right" });

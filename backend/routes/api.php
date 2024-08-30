@@ -23,6 +23,8 @@ use App\Http\Controllers\User\ResetController;
 use App\Http\Controllers\User\UserController;
 
 
+Route::put('/user/update', [UserController::class, 'update'])->middleware('auth:api');
+
 
 
  /////////////// User Login API Start ////////////////////////
@@ -46,7 +48,7 @@ Route::get('/user',[UserController::class, 'User'])->middleware('auth:api');
 
 
 
- 
+
 
 
 

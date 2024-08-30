@@ -118,7 +118,7 @@ const Cart = ({ user }) => {
     myFormData.append('delivery_address', address);
     myFormData.append('email', user.email);
     myFormData.append('invoice_no', invoice);
-    myFormData.append('delivery_charge', "00");
+    myFormData.append('delivery_charge', "25");
 
     try {
       const response = await axios.post(cartOrder(), myFormData);
