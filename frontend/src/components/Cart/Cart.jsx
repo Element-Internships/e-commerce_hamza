@@ -52,7 +52,11 @@ const Cart = ({ user }) => {
 
   const itemPlus = async (id, quantity, price) => {
     try {
-      const response = await axios.get(updateCartItemPlus(id, quantity, price));
+      
+      const qty = parseInt(quantity, 10);
+      const unitPrice = parseFloat(price);
+  
+      const response = await axios.get(updateCartItemPlus(id, qty, unitPrice));
       if (response.data === 1) {
         cogoToast.success("Item Quantity Increased", { position: 'top-right' });
         setProductData(prevData =>
@@ -60,8 +64,8 @@ const Cart = ({ user }) => {
             item.id === id
               ? { 
                   ...item, 
-                  quantity: item.quantity + 1, 
-                  total_price: (item.quantity + 1) * parseInt(item.unit_price) 
+                  quantity: qty + 1, 
+                  total_price: Number((qty + 1) * unitPrice).toFixed(2)
                 }
               : item
           )
@@ -151,7 +155,12 @@ const Cart = ({ user }) => {
               <h5 className="product-name">{product.product_name}</h5>
               <h6>Quantity = {product.quantity}</h6>
               <p>{product.size} | {product.color}</p>
-              <h6>Price = {product.unit_price} x {product.quantity} = {product.total_price}$</h6>
+              {/* <h6>Price = {product.unit_price} x {product.quantity} = {product.total_price}$</h6> */}
+              <h6>
+               Price = {product.unit_price} x {product.quantity} = {Number(product.total_price).toFixed(2)}$
+               </h6>
+
+
             </Col>
             <Col md={3} lg={3} sm={12} xs={12}>
               <Button onClick={() => removeItem(product.id)} className="btn mt-2 mx-1 btn-lg site-btn">

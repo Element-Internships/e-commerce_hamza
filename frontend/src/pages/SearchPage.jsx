@@ -15,7 +15,7 @@ const SearchPage = () => {
     useEffect(() => {
         window.scrollTo(0, 0);
         if (searchkey) { // Check if searchkey exists before making the request
-            axios.get(getProductBySearch(searchkey)) // Use the named export
+            axios.get(getProductBySearch(searchkey)) 
                 .then(response => {
                     setProductData(response.data);
                 })

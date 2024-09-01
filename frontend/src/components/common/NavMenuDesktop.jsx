@@ -1,11 +1,14 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { Navbar, Container, Row, Col, Button } from "react-bootstrap";
+import { Navbar, Container, Row, Col, Button,Dropdown  } from "react-bootstrap";
 import Bars from "../../assets/images/bars.png";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import MegaMenuAll from "../home/MegaMenuAll";
 import axios from "axios";
 import { getCartCount } from "../../api/AppURL"; 
 import EcomerceLogo from "../../assets/images/ecomerce.png";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser, faList, faEnvelope, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+
 
 const NavMenuDesktop = (props) => {
   const [SideNavState, setSideNavState] = useState("sideNavClose");
@@ -87,6 +90,7 @@ const NavMenuDesktop = (props) => {
 
   const logout = () => {
     localStorage.clear();
+    nav("/login");
    
     
   };
@@ -128,34 +132,54 @@ const NavMenuDesktop = (props) => {
   let buttons;
   if (localStorage.getItem("token")) {
     buttons = (
-      <div>
-        <Link to="/favourite" className="btn">
+      <div className="button-container">
+        <Link to="/favourite" className="btn" style={{marginLeft:"30px"}}>
           <i className="fa h4 fa-heart"></i>
           <sup>
             <span className="badge text-white bg-danger">{favoriteCount}</span>
           </sup>
         </Link>
-
+  
         <Link to="/notification" className="btn">
           <i className="fa h4 fa-bell"></i>
           <sup>
             <span className="badge text-white bg-danger">{notificationCount}</span>
           </sup>
         </Link>
-
-        <Link to="/profile" className="h4 btn">
-          PROFILE
-        </Link>
-        <Link to="/" onClick={logout} className="h4 btn">
-          LOGOUT
-        </Link>
-
+  
         <Link to="/cart" className="cart-btn">
           <i className="fa fa-shopping-cart"></i> {cartCount} Items{" "}
         </Link>
+  
+        <Dropdown style={{ marginLeft: "30px" }}>
+      <Dropdown.Toggle variant="link" id="dropdown-basic">
+        <img src={EcomerceLogo} alt="User" className="user-image rounded-circle" />
+      </Dropdown.Toggle>
+
+      <Dropdown.Menu>
+        <Dropdown.Item as={Link} to="/profile">
+          <FontAwesomeIcon icon={faUser} className="me-2" />
+          Profile
+        </Dropdown.Item>
+        <Dropdown.Item as={Link} to="/orderlist">
+          <FontAwesomeIcon icon={faList} className="me-2" />
+          Order List
+        </Dropdown.Item>
+        <Dropdown.Item as={Link} to="/contact">
+          <FontAwesomeIcon icon={faEnvelope} className="me-2" />
+          Support
+        </Dropdown.Item>
+        <Dropdown.Item onClick={logout}>
+          <FontAwesomeIcon icon={faSignOutAlt} className="me-2" />
+          Logout
+        </Dropdown.Item>
+      </Dropdown.Menu>
+    </Dropdown>
       </div>
     );
-  } else {
+  }
+  
+   else {
     buttons = (
       <div>
         <Link to="/favourite" className="btn">

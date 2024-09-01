@@ -15,31 +15,37 @@ use App\Http\Requests\RegisterRequest;
 
 class AuthController extends Controller
 {
-     public function Login(Request $request){
+    
 
-        try{
+    public function Login(Request $request)
+{
+    try {
+        if (Auth::attempt($request->only('email', 'password'))) {
+            $user = Auth::user();
 
-            if (Auth::attempt($request->only('email','password'))) {
-                $user = Auth::user();
-                $token = $user->createToken('app')->accessToken;
+            // Revoke any existing tokens
+            $user->tokens()->delete();
 
-                return response([
-                    'message' => "Successfully Login",
-                    'token' => $token,
-                    'user' => $user
-                ],200); 
-            }
+            // Create a new token
+            $token = $user->createToken('app')->accessToken;
 
-        }catch(\Exception $exception){
             return response([
-                'message' => $exception->getMessage()
-            ],400);
+                'message' => "Successfully Logged In",
+                'token' => $token,
+                'user' => $user
+            ], 200);
         }
+    } catch (\Exception $exception) {
         return response([
-            'message' => 'Invalid Email Or Password' 
-        ],401);
+            'message' => $exception->getMessage()
+        ], 400);
+    }
 
-    } 
+    return response([
+        'message' => 'Invalid Email Or Password'
+    ], 401);
+}
+
 
  public function Register(RegisterRequest $request){
 
